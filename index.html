@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Valentine 💖</title>
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff5f6d, #ffc371);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    touch-action: manipulation;
+  }
+
+  /* ================= FIRST SCREEN ================= */
+
+  .container {
+    background: white;
+    padding: 28px 18px;
+    border-radius: 18px;
+    text-align: center;
+    width: 90%;
+    max-width: 360px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    z-index: 10;
+  }
+
+  h1 {
+    color: #e63946;
+    margin-bottom: 25px;
+    font-size: 22px;
+  }
+
+  .buttons {
+    position: relative;
+    height: 200px;
+  }
+
+  button {
+    font-size: 18px;
+    padding: 14px 30px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  #yesBtn {
+    background: linear-gradient(135deg, #ff4d6d, #ff758f);
+    color: white;
+  }
+
+  #noBtn {
+    background: #adb5bd;
+    position: absolute;
+    left: 50%;
+    top: 90px;
+    transform: translateX(-50%);
+  }
+
+  /* ================= FINAL SCREEN ================= */
+
+  .celebration {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: url("final-bg.jpg") center / cover no-repeat;
+    overflow: hidden;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 1;
+  }
+
+  .right-text {
+    position: absolute;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45%;
+    z-index: 5;
+    font-size: 22px;
+    line-height: 1.5;
+    font-weight: bold;
+    color: #fff;
+    text-shadow:
+      0 0 5px #fff,
+      0 0 10px #ff77ff,
+      0 0 20px #ff33cc;
+    animation: glitter 2s infinite alternate;
+  }
+
+  @keyframes glitter {
+    from {
+      text-shadow:
+        0 0 5px #fff,
+        0 0 10px #ff77ff,
+        0 0 20px #ff33cc;
+    }
+    to {
+      text-shadow:
+        0 0 10px #fff,
+        0 0 20px #ffd700,
+        0 0 30px #ff69b4;
+    }
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 768px) {
+    .right-text {
+      width: 80%;
+      right: 10%;
+      text-align: center;
+      font-size: 20px;
+    }
+  }
+
+  /* ================= FIREWORKS ================= */
+
+  .firework {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    animation: explode 1.4s ease-out forwards;
+    z-index: 4;
+  }
+
+  @keyframes explode {
+    0% {
+      transform: scale(0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(18);
+      opacity: 0;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- FIRST SCREEN -->
+<div class="container" id="questionBox">
+  <h1>Will you be my Valentine? 💖</h1>
+
+  <div class="buttons">
+    <button id="yesBtn">Yes 💕</button>
+    <button id="noBtn">No 😜</button>
+  </div>
+</div>
+
+<!-- FINAL SCREEN -->
+<div class="celebration" id="celebration">
+  <div class="overlay"></div>
+  <div class="right-text">
+    <span id="typingText"></span>
+  </div>
+</div>
+
+<script>
+  const noBtn = document.getElementById("noBtn");
+  const yesBtn = document.getElementById("yesBtn");
+  const questionBox = document.getElementById("questionBox");
+  const celebration = document.getElementById("celebration");
+  const typingTarget = document.getElementById("typingText");
+
+  let scale = 1;
+
+  const message =
+    "💖 TILLU SING 💖 I knew it… you would hit the Yes without even a single thought ❤️❤️❤️💕💕💕";
+
+  function moveNoButtonMobileSafe() {
+    const padding = 10;
+    const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+    const maxY = window.innerHeight - noBtn.offsetHeight - padding - 120;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+
+    scale += 0.12;
+    yesBtn.style.transform = `scale(${scale})`;
+  }
+
+  noBtn.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    moveNoButtonMobileSafe();
+  });
+
+  function typeMessageWordByWord(text, element) {
+    const words = text.split(" ");
+    let index = 0;
+
+    const interval = setInterval(() => {
+      if (index < words.length) {
+        element.innerHTML += words[index] + " ";
+        index++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 350);
+  }
+
+  yesBtn.addEventListener("click", () => {
+    questionBox.style.display = "none";
+    celebration.style.display = "block";
+    startFireworks();
+    typeMessageWordByWord(message, typingTarget);
+  });
+
+  function startFireworks() {
+    setInterval(() => {
+      const fw = document.createElement("div");
+      fw.classList.add("firework");
+      fw.style.left = Math.random() * 100 + "vw";
+      fw.style.top = Math.random() * 45 + "vh";
+      fw.style.backgroundColor =
+        `hsl(${Math.random() * 360},100%,60%)`;
+      celebration.appendChild(fw);
+
+      setTimeout(() => fw.remove(), 1400);
+    }, 350);
+  }
+</script>
+
+</body>
+</html>
